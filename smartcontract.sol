@@ -1,18 +1,20 @@
 /**
- *Submitted for verification at BscScan.com on 2022-01-29
+ *Submitted for verification at BscScan.com on 2022-03-03
 */
 
 /**
+                                                                                                                                      
     Name =  Alnassr FC fan token
     Symbol = NASSR
-    Total Supply = 2,000,000,000
+    Total Supply = 300,000,000
     Decimal = 18
     3% of each transaction to the liquidity pool
     3% of each transaction to the dev wallet
     4% of each transaction to holders
+                                                                                                                                           
 */
 // SPDX-License-Identifier: Unlicensed
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.10;
 
 
 abstract contract Context {
@@ -38,12 +40,84 @@ interface IBEP20 {
 }
  
 library SafeMath {
+    /**
+     * @dev Returns the addition of two unsigned integers, with an overflow flag.
+     *
+     * _Available since v3.4._
+     */
+    function tryAdd(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+        unchecked {
+            uint256 c = a + b;
+            if (c < a) return (false, 0);
+            return (true, c);
+        }
+    }
 
+    /**
+     * @dev Returns the substraction of two unsigned integers, with an overflow flag.
+     *
+     * _Available since v3.4._
+     */
+    function trySub(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+        unchecked {
+            if (b > a) return (false, 0);
+            return (true, a - b);
+        }
+    }
+
+    /**
+     * @dev Returns the multiplication of two unsigned integers, with an overflow flag.
+     *
+     * _Available since v3.4._
+     */
+    function tryMul(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+        unchecked {
+            // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
+            // benefit is lost if 'b' is also tested.
+            // See: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/522
+            if (a == 0) return (true, 0);
+            uint256 c = a * b;
+            if (c / a != b) return (false, 0);
+            return (true, c);
+        }
+    }
+
+    /**
+     * @dev Returns the division of two unsigned integers, with a division by zero flag.
+     *
+     * _Available since v3.4._
+     */
+    function tryDiv(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+        unchecked {
+            if (b == 0) return (false, 0);
+            return (true, a / b);
+        }
+    }
+
+    /**
+     * @dev Returns the remainder of dividing two unsigned integers, with a division by zero flag.
+     *
+     * _Available since v3.4._
+     */
+    function tryMod(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+        unchecked {
+            if (b == 0) return (false, 0);
+            return (true, a % b);
+        }
+    }
+
+    /**
+     * @dev Returns the addition of two unsigned integers, reverting on
+     * overflow.
+     *
+     * Counterpart to Solidity's `+` operator.
+     *
+     * Requirements:
+     *
+     * - Addition cannot overflow.
+     */
     function add(uint256 a, uint256 b) internal pure returns (uint256) {
-        uint256 c = a + b;
-        require(c >= a, "SafeMath: addition overflow");
-
-        return c;
+        return a + b;
     }
 
     /**
@@ -57,24 +131,7 @@ library SafeMath {
      * - Subtraction cannot overflow.
      */
     function sub(uint256 a, uint256 b) internal pure returns (uint256) {
-        return sub(a, b, "SafeMath: subtraction overflow");
-    }
-
-    /**
-     * @dev Returns the subtraction of two unsigned integers, reverting with custom message on
-     * overflow (when the result is negative).
-     *
-     * Counterpart to Solidity's `-` operator.
-     *
-     * Requirements:
-     *
-     * - Subtraction cannot overflow.
-     */
-    function sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
-        require(b <= a, errorMessage);
-        uint256 c = a - b;
-
-        return c;
+        return a - b;
     }
 
     /**
@@ -88,58 +145,26 @@ library SafeMath {
      * - Multiplication cannot overflow.
      */
     function mul(uint256 a, uint256 b) internal pure returns (uint256) {
-        // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
-        // benefit is lost if 'b' is also tested.
-        // See: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/522
-        if (a == 0) {
-            return 0;
-        }
-
-        uint256 c = a * b;
-        require(c / a == b, "SafeMath: multiplication overflow");
-
-        return c;
+        return a * b;
     }
 
     /**
-     * @dev Returns the integer division of two unsigned integers. Reverts on
+     * @dev Returns the integer division of two unsigned integers, reverting on
      * division by zero. The result is rounded towards zero.
      *
-     * Counterpart to Solidity's `/` operator. Note: this function uses a
-     * `revert` opcode (which leaves remaining gas untouched) while Solidity
-     * uses an invalid opcode to revert (consuming all remaining gas).
+     * Counterpart to Solidity's `/` operator.
      *
      * Requirements:
      *
      * - The divisor cannot be zero.
      */
     function div(uint256 a, uint256 b) internal pure returns (uint256) {
-        return div(a, b, "SafeMath: division by zero");
-    }
-
-    /**
-     * @dev Returns the integer division of two unsigned integers. Reverts with custom message on
-     * division by zero. The result is rounded towards zero.
-     *
-     * Counterpart to Solidity's `/` operator. Note: this function uses a
-     * `revert` opcode (which leaves remaining gas untouched) while Solidity
-     * uses an invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     *
-     * - The divisor cannot be zero.
-     */
-    function div(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
-        require(b > 0, errorMessage);
-        uint256 c = a / b;
-        // assert(a == b * c + a % b); // There is no case in which this doesn't hold
-
-        return c;
+        return a / b;
     }
 
     /**
      * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
-     * Reverts when dividing by zero.
+     * reverting when dividing by zero.
      *
      * Counterpart to Solidity's `%` operator. This function uses a `revert`
      * opcode (which leaves remaining gas untouched) while Solidity uses an
@@ -150,12 +175,58 @@ library SafeMath {
      * - The divisor cannot be zero.
      */
     function mod(uint256 a, uint256 b) internal pure returns (uint256) {
-        return mod(a, b, "SafeMath: modulo by zero");
+        return a % b;
+    }
+
+    /**
+     * @dev Returns the subtraction of two unsigned integers, reverting with custom message on
+     * overflow (when the result is negative).
+     *
+     * CAUTION: This function is deprecated because it requires allocating memory for the error
+     * message unnecessarily. For custom revert reasons use {trySub}.
+     *
+     * Counterpart to Solidity's `-` operator.
+     *
+     * Requirements:
+     *
+     * - Subtraction cannot overflow.
+     */
+    function sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
+        unchecked {
+            require(b <= a, errorMessage);
+            return a - b;
+        }
+    }
+
+    /**
+     * @dev Returns the integer division of two unsigned integers, reverting with custom message on
+     * division by zero. The result is rounded towards zero.
+     *
+     * Counterpart to Solidity's `%` operator. This function uses a `revert`
+     * opcode (which leaves remaining gas untouched) while Solidity uses an
+     * invalid opcode to revert (consuming all remaining gas).
+     *
+     * Counterpart to Solidity's `/` operator. Note: this function uses a
+     * `revert` opcode (which leaves remaining gas untouched) while Solidity
+     * uses an invalid opcode to revert (consuming all remaining gas).
+     *
+     * Requirements:
+     *
+     * - The divisor cannot be zero.
+     */
+    function div(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
+        unchecked {
+            require(b > 0, errorMessage);
+            return a / b;
+        }
     }
 
     /**
      * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
-     * Reverts with custom message when dividing by zero.
+     * reverting with custom message when dividing by zero.
+     *
+     * CAUTION: This function is deprecated because it requires allocating memory for the error
+     * message unnecessarily. For custom revert reasons use {tryMod}.
      *
      * Counterpart to Solidity's `%` operator. This function uses a `revert`
      * opcode (which leaves remaining gas untouched) while Solidity uses an
@@ -166,11 +237,80 @@ library SafeMath {
      * - The divisor cannot be zero.
      */
     function mod(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
-        require(b != 0, errorMessage);
-        return a % b;
+        unchecked {
+            require(b > 0, errorMessage);
+            return a % b;
+        }
+    }
+}
+library SafeMathInt {
+    int256 private constant MIN_INT256 = int256(1) << 255;
+    int256 private constant MAX_INT256 = ~(int256(1) << 255);
+
+    /**
+     * @dev Multiplies two int256 variables and fails on overflow.
+     */
+    function mul(int256 a, int256 b) internal pure returns (int256) {
+        int256 c = a * b;
+
+        // Detect overflow when multiplying MIN_INT256 with -1
+        require(c != MIN_INT256 || (a & MIN_INT256) != (b & MIN_INT256));
+        require((b == 0) || (c / b == a));
+        return c;
+    }
+
+    /**
+     * @dev Division of two int256 variables and fails on overflow.
+     */
+    function div(int256 a, int256 b) internal pure returns (int256) {
+        // Prevent overflow when dividing MIN_INT256 by -1
+        require(b != -1 || a != MIN_INT256);
+
+        // Solidity already throws when dividing by 0.
+        return a / b;
+    }
+
+    /**
+     * @dev Subtracts two int256 variables and fails on overflow.
+     */
+    function sub(int256 a, int256 b) internal pure returns (int256) {
+        int256 c = a - b;
+        require((b >= 0 && c <= a) || (b < 0 && c > a));
+        return c;
+    }
+
+    /**
+     * @dev Adds two int256 variables and fails on overflow.
+     */
+    function add(int256 a, int256 b) internal pure returns (int256) {
+        int256 c = a + b;
+        require((b >= 0 && c >= a) || (b < 0 && c < a));
+        return c;
+    }
+
+    /**
+     * @dev Converts to absolute value, and fails on overflow.
+     */
+    function abs(int256 a) internal pure returns (int256) {
+        require(a != MIN_INT256);
+        return a < 0 ? -a : a;
+    }
+
+
+    function toUint256Safe(int256 a) internal pure returns (uint256) {
+        require(a >= 0);
+        return uint256(a);
     }
 }
 
+
+library SafeMathUint {
+  function toInt256Safe(uint256 a) internal pure returns (int256) {
+    int256 b = int256(a);
+    require(b >= 0);
+    return b;
+  }
+}
 contract Ownable is Context {
     address private _owner;
     address private _previousOwner;
@@ -203,23 +343,7 @@ contract Ownable is Context {
         _owner = newOwner;
     }
 
-    function getUnlockTime() public view returns (uint256) {
-        return _lockTime;
-    }
-
-    function lock(uint256 time) public virtual onlyOwner {
-        _previousOwner = _owner;
-        _owner = address(0);
-        _lockTime = block.timestamp + time;
-        emit OwnershipTransferred(_owner, address(0));
-    }
     
-    function unlock() public virtual {
-        require(_previousOwner == msg.sender, "You don't have permission to unlock");
-        require(block.timestamp > _lockTime , "Contract is still locked");
-        emit OwnershipTransferred(_owner, _previousOwner);
-        _owner = _previousOwner;
-    }
 }
 
 interface IUniswapV2Factory {
@@ -437,10 +561,10 @@ contract NASSR is Context, IBEP20, Ownable {
     mapping (address => bool) public _isExcludedFromAutoLiquidity;
 
     address[] private _excluded;
-    address public _devWallet;
+    address public _marketingWallet;
    
     uint256 private constant MAX = ~uint256(0);
-    uint256 private _tTotal = 2000000000 * 10**18;
+    uint256 private _tTotal = 300000000 * 10**18;
     uint256 private _rTotal = (MAX - (MAX % _tTotal));
     uint256 private _tFeeTotal;
 
@@ -448,12 +572,14 @@ contract NASSR is Context, IBEP20, Ownable {
     string private _symbol   = "NASSR";
     uint8 private  _decimals = 18;
     
-    uint256 public _taxFee       = 4; 
+    uint256 public _taxFee =4; 
     uint256 public _liquidityFee = 6; 
-    uint256 public _percentageOfLiquidityForDev = 50; 
+    uint256 public _percentageOfLiquidityForMarketing = 50; 
+    uint256 public maxWalletToken = 300000000 * (10**18);
+
     
-    uint256 public  _maxTxAmount     = 2000000000 * 10**18;
-    uint256 private _minTokenBalance = 1000 * 10**18;
+    uint256 public  _maxTxAmount     = 300000000 * 10**18;
+    uint256 private _minTokenBalance = 10000 * 10**18;
     
     // auto liquidity
     bool public _swapAndLiquifyEnabled = true;
@@ -467,7 +593,7 @@ contract NASSR is Context, IBEP20, Ownable {
         uint256 bnbReceived,
         uint256 tokensIntoLiqudity
     );
-    event DevFeeSent(address to, uint256 bnbSent);
+    event MarketingFeeSent(address to, uint256 bnbSent);
     
     modifier lockTheSwap {
         _inSwapAndLiquify = true;
@@ -475,8 +601,8 @@ contract NASSR is Context, IBEP20, Ownable {
         _inSwapAndLiquify = false;
     }
     
-    constructor (address cOwner, address devWallet) Ownable(cOwner) {
-        _devWallet = devWallet;
+    constructor (address cOwner, address marketingWallet) Ownable(cOwner) {
+        _marketingWallet = marketingWallet;
 
         _rOwned[cOwner] = _rTotal;
         
@@ -489,7 +615,7 @@ contract NASSR is Context, IBEP20, Ownable {
         // exclude system contracts
         _isExcludedFromFee[owner()]        = true;
         _isExcludedFromFee[address(this)]  = true;
-        _isExcludedFromFee[_devWallet]     = true;
+        _isExcludedFromFee[_marketingWallet]     = true;
 
         _isExcludedFromAutoLiquidity[_uniswapV2Pair]            = true;
         _isExcludedFromAutoLiquidity[address(_uniswapV2Router)] = true;
@@ -615,30 +741,33 @@ contract NASSR is Context, IBEP20, Ownable {
         }
     }
 
-    function setDevWallet(address devWallet) external onlyOwner {
-        _devWallet = devWallet;
+    function setMarketingWallet(address marketingWallet) external onlyOwner {
+        _marketingWallet = marketingWallet;
     }
-
+    function setMinimumTokenBalance (uint256 minimumToken) external onlyOwner {
+        _minTokenBalance = minimumToken;
+    }
     function setExcludedFromFee(address account, bool e) external onlyOwner {
         _isExcludedFromFee[account] = e;
     }
     
     function setTaxFeePercent(uint256 taxFee) external onlyOwner {
+        require(taxFee <= 4, "Holder Reflection cannot exceed 4%");
         _taxFee = taxFee;
     }
 
     function setLiquidityFeePercent(uint256 liquidityFee) external onlyOwner {
+        require(liquidityFee <= 16, "Liquidity Fee cannot exceed 16%");
         _liquidityFee = liquidityFee;
     }
 
-    function setPercentageOfLiquidityForDev(uint256 devFee) external onlyOwner {
-        _percentageOfLiquidityForDev = devFee;
+    function setPercentageOfLiquidityForMarketing(uint256 marketingFee) external onlyOwner {
+        _percentageOfLiquidityForMarketing = marketingFee;
     }
-   
-    function setMaxTxPercent(uint256 maxTxPercent) external onlyOwner {
-        _maxTxAmount = _tTotal.mul(maxTxPercent).div(100);
-    }
-
+    function setMaxWalletTokens(uint256 _maxToken) external onlyOwner {
+  	    maxWalletToken = _maxToken ;
+  	}
+    
     function setSwapAndLiquifyEnabled(bool e) public onlyOwner {
         _swapAndLiquifyEnabled = e;
         emit SwapAndLiquifyEnabledUpdated(e);
@@ -748,7 +877,21 @@ contract NASSR is Context, IBEP20, Ownable {
         if (contractTokenBalance >= _maxTxAmount) {
             contractTokenBalance = _maxTxAmount;
         }
-        
+        if (
+            from != owner() &&
+            to != owner() &&
+            to != address(0) &&
+            to != address(0xdead) &&
+            to != _uniswapV2Pair
+        ) {
+
+            uint256 contractBalanceRecepient = balanceOf(to);
+            require(
+                contractBalanceRecepient + amount <= maxWalletToken,
+                "Exceeds maximum wallet token amount."
+            );
+            
+        }
         bool isOverMinTokenBalance = contractTokenBalance >= _minTokenBalance;
         if (
             isOverMinTokenBalance &&
@@ -787,12 +930,12 @@ contract NASSR is Context, IBEP20, Ownable {
         // this is the amount of BNB that we just swapped into
         uint256 newBalance = address(this).balance.sub(initialBalance);
 
-        // take dev fee
-        uint256 devFee          = newBalance.mul(_percentageOfLiquidityForDev).div(100);
-        uint256 bnbForLiquidity = newBalance.sub(devFee);
-        if (devFee > 0) {
-            payable(_devWallet).transfer(devFee);
-            emit DevFeeSent(_devWallet, devFee);
+        // take marketing fee
+        uint256 marketingFee          = newBalance.mul(_percentageOfLiquidityForMarketing).div(100);
+        uint256 bnbForLiquidity = newBalance.sub(marketingFee);
+        if (marketingFee > 0) {
+            payable(_marketingWallet).transfer(marketingFee);
+            emit MarketingFeeSent(_marketingWallet, marketingFee);
         }
 
         // add liquidity to uniswap
